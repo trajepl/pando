@@ -1,4 +1,3 @@
-import base
 import multiprocessing 
 
 from gensim.corpora import WikiCorpus
