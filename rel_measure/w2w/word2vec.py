@@ -5,6 +5,7 @@ from gensim.models import Word2Vec
 from gensim.models.word2vec import LineSentence
 
 from config import wiki_text_path, word2vec_model_path
+from utils import make_dir_file
 
 
 def train(wiki_text_path, word2vec_model_path):
@@ -17,6 +18,7 @@ def train(wiki_text_path, word2vec_model_path):
     )
     # trim unneeded model memory = use (much) less RAM
     model.init_sims(replace=True)
+    make_dir_file(word2vec_model_path)
     model.save(word2vec_model_path)
 
 
