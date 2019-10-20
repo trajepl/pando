@@ -5,8 +5,10 @@ wiki_dump_path = str(
 wiki_text_path = str(
     Path('./data/raw_data/wikipedia/enwiki_page_little.txt').resolve())
 
-word2vec_model_path = str(
-    Path('./data/embedding/w2w/word2vec.model').resolve())
+word2vec_model_100d_path = str(
+    Path('./data/embedding/word2vec/word2vec_100d.model').resolve())
+word2vec_model_path = word2vec_model_100d_path
+
 glove_model_50d_path = str(
     Path('./data/embedding/glove.6B/glove.6B.50d.txt').resolve())
 glove_model_100d_path = str(

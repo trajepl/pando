@@ -1,6 +1,7 @@
 from typing import Dict
 
 import numpy as np
+from gensim.models import Word2Vec
 
 
 class ModelLoad():
@@ -11,17 +12,21 @@ class ModelLoad():
 
     def load(self) -> Dict:
         print(f'Loading {self.model_name} Model')
-        with open(self.model_path, 'r') as fin:
-            for line in fin.readlines():
-                line = line.split()
-                word = line[0]
-                embedding = np.array([float(val) for val in line[1:]])
-                self.model[word] = embedding
-        print('Done.', len(self.model), 'words loaded!')
+        if self.model_name == 'word2vec':
+            self.model = Word2Vec.load(self.model_path).wv
+        else:
+            
+            with open(self.model_path, 'r') as fin:
+                for line in fin.readlines():
+                    line = line.split()
+                    word = line[0]
+                    embedding = np.array([float(val) for val in line[1:]])
+                    self.model[word] = embedding
+            print('Done.', len(self.model), 'words loaded!')
 
 
 if __name__ == '__main__':
-    from evaluation.metric import cosine
+    from eval.metric import cosine
     from config import glove_model_path
     model = ModelLoad('glove', glove_model_path)
     model.load()
