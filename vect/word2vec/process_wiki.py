@@ -1,6 +1,6 @@
 ﻿from tqdm import tqdm
-from gensim.corpora import WikiCorpus
 from config import wiki_dump_path, wiki_text_path
+from gensim.corpora import WikiCorpus
 
 
 def make_wiki(wiki_dump_path, wiki_text_path):

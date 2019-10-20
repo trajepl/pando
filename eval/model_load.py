@@ -1,0 +1,28 @@
+from typing import Dict
+
+import numpy as np
+
+
+class ModelLoad():
+    def __init__(self, model_name: str, model_path: str):
+        self.model = {}
+        self.model_name = model_name
+        self.model_path = model_path
+
+    def load(self) -> Dict:
+        print(f'Loading {self.model_name} Model')
+        with open(self.model_path, 'r') as fin:
+            for line in fin.readlines():
+                line = line.split()
+                word = line[0]
+                embedding = np.array([float(val) for val in line[1:]])
+                self.model[word] = embedding
+        print('Done.', len(self.model), 'words loaded!')
+
+
+if __name__ == '__main__':
+    from evaluation.metric import cosine
+    from config import glove_model_path
+    model = ModelLoad('glove', glove_model_path)
+    model.load()
+    print(cosine(model.model['hello'], model.model['hi']))

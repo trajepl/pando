@@ -1,4 +1,4 @@
-import multiprocessing 
+import multiprocessing
 
 from gensim.corpora import WikiCorpus
 from gensim.models import Word2Vec
