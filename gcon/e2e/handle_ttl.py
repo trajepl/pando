@@ -8,20 +8,20 @@ from tqdm import tqdm
 # line_num = 183605697
 line_num = 10001
 
-w2e_path_prefix = './gcon/w2e/data/'
+w2e_path_prefix = './gcon/e2e/data/'
 e2e_path_prefix = './gcon/e2e/data/'
-ent_dict_path = os.path.join(w2e_path_prefix, 'entity_map')
+ent_dict_path = os.path.join(w2e_path_prefix, 'ids_page')
 page_links_dict_path = os.path.join(e2e_path_prefix, 'page_links_map')
 page_links_path = os.path.join(e2e_path_prefix, '1w_page_links_en')
 ent_dict = {}
 
 
-def load_ent_dict(sep: str = '\t'):
+def load_ent_dict(sep: str = ' '):
     print('loading entity map...')
     with open(ent_dict_path, 'r', encoding='utf-8') as fin:
         for line in tqdm(fin.readlines()):
             line = line.strip().split(sep)
-            ent_dict[line[0]] = line[1]
+            ent_dict[line[1]] = line[0]
 
 
 def parse_ttl(ttls: List):

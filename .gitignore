@@ -134,4 +134,5 @@ dmypy.json
 
 ## data embedding
 data/embedding/*
+data/wikipedia/*
 gcon/*/data/*

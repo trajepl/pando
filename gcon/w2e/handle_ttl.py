@@ -6,6 +6,8 @@ from tqdm import tqdm
 
 path_prefix = './gcon/w2e/data'
 anchor_text_en_ttl = os.path.join(path_prefix, '1w_anchor_text_en.ttl')
+ent_dict_path = os.path.join('./gcon/e2e/data', 'ids_page')
+
 
 # line_num = 163264419
 
@@ -16,32 +18,39 @@ anc_idx = 0
 gra_rel = defaultdict(set)
 
 
+def load_ent_dict(sep: str = ' '):
+    print('loading entity map...')
+    with open(ent_dict_path, 'r', encoding='utf-8') as fin:
+        for line in tqdm(fin.readlines()):
+            line = line.strip().split(sep)
+            ent_dict[line[1]] = line[0]
+
+
 def parse_line_ttl(line: str):
-    global ent_dict, ent_idx, anc_dict, anc_idx, gra_rel
+    global gra_rel, anc_dict, anc_idx
     line = line.strip().split(' ')
     try:
         line[2] = ' '.join(line[2:-1]).strip().split('"')[1]
         line = [line[0], line[2]]
 
-        if not line[0] in ent_dict.keys():
-            ent_dict[line[0]] = ent_idx
-            ent_idx += 1
+        if line[0] in ent_dict.keys():
+            line[0] = ent_dict[line[0]]
+
         if not line[1] in anc_dict.keys():
             anc_dict[line[1]] = anc_idx
             anc_idx += 1
-        gra_rel[str(anc_dict[line[1]])].add(str(ent_dict[line[0]]))
+        gra_rel[str(anc_dict[line[1]])].add(str(line[0]))
     except Exception as e:
         print(line)
         print(e)
 
 
 def parse_ttl(fn: str):
-    global ent_dict, ent_idx, anc_dict, anc_idx, gra_rel
-    ignore_first = True
+    global gra_rel, anc_dict
+    load_ent_dict()
     with open(fn, 'r', encoding='utf-8') as fin:
         for line in tqdm(fin.readlines()):
-            if ignore_first:
-                ignore_first = False
+            if line.startswith('#'):
                 continue
             parse_line_ttl(line)
 
@@ -57,12 +66,6 @@ def parse_ttl(fn: str):
             line = k + '\t' + str(v)
             fout.write(line + '\n')
     del anc_dict
-    # write anchor text dict
-    with open(os.path.join(path_prefix, 'entity_map'), 'w', encoding='utf-8') as fout:
-        for k, v in ent_dict.items():
-            line = k + '\t' + str(v)
-            fout.write(line + '\n')
-    del ent_dict
 
 
 if __name__ == "__main__":
