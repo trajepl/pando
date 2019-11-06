@@ -19,3 +19,6 @@ glove_model_300d_path = str(
     Path('./data/embedding/glove/glove.6B.300d.txt').resolve())
 glove_model_42b_300d_path = str(Path('./data/embedding/glove/glove.42B.300d.txt').resolve())
 glove_model_path = glove_model_42b_300d_path
+
+dictionary_path = str(Path('./data/golden/dictionary.txt').resolve())
+dictionary_short_path = str(Path('./data/golden/dictionary_short.txt').resolve())
