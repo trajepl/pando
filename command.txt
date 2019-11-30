@@ -1,0 +1,5 @@
+# glove 6b.300d
+python main.py --model glove --model_path ./data/embedding/glove/glove.6B.300d.txt
+
+# wn_gat 450 epoch
+python main.py --model gat --model_path ./data/embedding/wn_gat/450_wn_gat.emb

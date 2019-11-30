@@ -4,11 +4,11 @@ def path_dis(w1: str, w2: str) -> float:
     w1_synsets = wn.synsets(w1)
     w2_synsets = wn.synsets(w2)
 
-    res = -100
+    res = 0
     for i in w1_synsets:
         for j in w2_synsets:
             res_t = i.path_similarity(j)
             if res_t is None:
-                res_t = -100
+                res_t = 0
             res = max(res_t, res)
     return res
