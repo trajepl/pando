@@ -11,6 +11,10 @@ from eval import metric
 from mapping import Mapping
 
 
+DICT_PATH = './data/embedding/wn_gat/dictionary_1w'
+EMB_KEY = 'oup'
+
+
 def path_dis(w1: str, w2: str) -> float:
     w1_synsets = wn.synsets(w1)
     w2_synsets = wn.synsets(w2)
@@ -51,7 +55,7 @@ class SRModels(object):
         self._load_model()
         print(f'Done!')
 
-    def _load_model(self) -> object:
+    def _load_model(self) -> None:
         return None
 
     def relatedness(self, w1: str, w2: str) -> float:
@@ -70,37 +74,41 @@ class SRModels(object):
             sr_ouput(fnt, golden_score, test_score)
 
 
-class WNGat(SRModels):
+class WNGNN(SRModels):
     def __init__(self, model_path, combine_model_path: str):
         super().__init__(model_path)
         self.combine_model_path = combine_model_path
         self.model2 = Glove(self.combine_model_path)
 
-    def _load_model(self) -> object:
-        emb_data = torch.load(self.model_path).numpy()
+    def _load_model(self) -> None:
+        emb_data = torch.load(self.model_path)[EMB_KEY].numpy()
         dictionary = Mapping()
-        dictionary.load('./data/embedding/wn_gat/dictionary_1w')
+        dictionary.load(DICT_PATH)
         for idx, word in dictionary.id2token.items():
             self.model[word] = emb_data[idx]
 
-    def relatedness(self, w1, w2, gamma: str = 1.0):
+    def relatedness(self, w1, w2, gamma: float = 1.0):
         rls1 = super().relatedness(w1, w2)
+        if 1.0 - gamma < 1e-6:
+            return rls1
         rls2 = self.model2.relatedness(w1, w2)
         return gamma * rls1 + (1.0 - gamma) * rls2
 
 
 class Word2Vec(SRModels):
-    def _load_model(self) -> object:
+    def _load_model(self) -> None:
         self.model = W2V.load(self.model_path).wv
 
     def relatedness(self, w1: str, w2: str, gamma: float = 1.0) -> float:
         rls1 = super().relatedness(w1, w2)
+        if 1.0 - gamma < 1e-6:
+            return rls1
         rls2 = path_dis(w1, w2)
         return gamma * rls1 + (1.0 - gamma) * rls2
 
 
 class Glove(SRModels):
-    def _load_model(self) -> object:
+    def _load_model(self) -> None:
         self.model = {}
         with open(self.model_path, 'r') as fin:
             for line in tqdm(fin.readlines()):
@@ -127,5 +135,5 @@ if __name__ == '__main__':
     # model = Glove(glove_model_path)
     # print(model.relatedness('automobile', 'car'))
 
-    model = WNGat(wn_gat_model_path, glove_model_300d_path)
+    model = WNGNN(wn_gat_model_path, glove_model_300d_path)
     model.perform(gamma=0.8)

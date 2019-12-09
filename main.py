@@ -11,6 +11,8 @@ parser.add_argument('--model', '-m', default='glove',
                     help='specific model to compute semantic relatedness')
 parser.add_argument('--model_path', default=glove_model_path,
                     help='path for model loading')
+parser.add_argument('--combine_model_path', default=glove_model_path,
+                    help='path for model loading')
 parser.add_argument('--golden_data', default=str(
     Path('./data/golden/').resolve()), help='path for golden dataset')
 parser.add_argument('--gamma', type=float, default=0.7)
@@ -20,8 +22,8 @@ if args.model == 'word2vec':
     model = models.Word2Vec(args.model_path)
 elif args.model == 'glove':
     model = models.Glove(args.model_path)
-elif args.model == 'wngat':
-    model = models.WNGat(args.model_path, args.combine_model_path)
+elif args.model == 'wngnn':
+    model = models.WNGNN(args.model_path, args.combine_model_path)
 else:
     pass
 
